@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Calendar - NutriTrack</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #f7fafc;
+      margin: 0;
+      padding: 2rem;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .calendar {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 10px;
+      max-width: 600px;
+      margin: 0 auto 2rem;
+    }
+
+    .day {
+      background: #edf2f7;
+      padding: 1rem;
+      text-align: center;
+      border-radius: 6px;
+      cursor: pointer;
+      border: 1px solid #ccc;
+    }
+
+    .day:hover {
+      background-color: #c6f6d5;
+    }
+
+    .upload-box {
+      max-width: 400px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    input[type="file"] {
+      margin-bottom: 1rem;
+    }
+
+    #preview {
+      margin-top: 1rem;
+      max-width: 100%;
+      border-radius: 10px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+<body>
+  <h2>Calendar Alimentație</h2>
+
+  <div class="calendar" id="calendar">
+    <!-- Zilele vor fi generate din JS -->
+  </div>
+
+  <div class="upload-box">
+    <label for="photo">Adaugă poză la mâncare (pentru ziua selectată)</label><br/>
+    <input type="file" id="photo" accept="image/*" onchange="previewImage(event)" /><br/>
+    <img id="preview" src="" alt="Previzualizare poză" style="display: none;" />
+  </div>
+
+  <script>
+    const calendarEl = document.getElementById("calendar");
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth(); // 0-based
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    let selectedDay = null;
+
+    // Generează zilele lunii curente
+    for (let i = 1; i <= daysInMonth; i++) {
+      const dayDiv = document.createElement("div");
+      dayDiv.className = "day";
+      dayDiv.textContent = i;
+      dayDiv.onclick = () => {
+        selectedDay = i;
+        alert("Ai selectat ziua " + i + ". Acum poți adăuga o poză.");
+      };
+      calendarEl.appendChild(dayDiv);
+    }
+
+    function previewImage(event) {
+      if (!selectedDay) {
+        alert("Selectează mai întâi o zi din calendar!");
+        event.target.value = ""; // reset input
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function () {
+        const output = document.getElementById("preview");
+        output.src = reader.result;
+        output.style.display = "block";
+      };
+      reader.readAsDataURL(event.target.files[0]);
+    }
+  </script>
+</body>
+</html>
